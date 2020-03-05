@@ -80,7 +80,6 @@ export default {
           this.$message.success('登录成功!')
           // 把服务器返回的token存到sessionStorage
           window.sessionStorage.setItem('token', data.data.token)
-          console.log(data.data.token)
           this.$router.push('/home')
         })
       })

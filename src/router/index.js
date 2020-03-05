@@ -17,7 +17,19 @@ const routes = [
   },
   {
     path: '/home',
-    component: () => import('../components/Home.vue')
+    component: () => import('../components/Home.vue'),
+    redirect: 'welcome',
+    // 欢迎页面
+    children: [
+      {
+        path: '/welcome',
+        component: () => import('../components/Welcome.vue')
+      },
+      {
+        path: '/users',
+        component: () => import('../components/user/Users.vue')
+      }
+    ]
   }
 ]
 
@@ -25,13 +37,13 @@ const router = new VueRouter({
   routes
 });
 
+// 前置路由守卫
 router.beforeEach((to, from, next) => {
   // 访问login直接放行
   if(to.path === '/login') return next();
   // 每次路由跳转前判断是否有token
   // 如果没有直接强制跳转到登录界面
   const TokenStr = window.sessionStorage.getItem('token');
-  console.log(TokenStr);
   if(!TokenStr) return next('login');
 
   // 有token直接方行
