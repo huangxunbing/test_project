@@ -41,22 +41,26 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop label="操作" width="180">
+        <!-- 用户操作区 -->
+        <el-table-column prop label="操作" width="210">
           <template slot-scope="scope">
             <div>
               <div :class="scope.row.id"></div>
+              <!-- 编辑用户 -->
               <el-button
                 size="mini"
                 type="primary"
                 icon="el-icon-edit"
                 @click="isShowusermodochange(scope.row.id)"
               ></el-button>
+              <!-- 删除用户 -->
               <el-button
                 @click="opendeleteuser(scope.row.id)"
                 size="mini"
                 type="danger"
                 icon="el-icon-delete"
               ></el-button>
+              <!-- 分配权限 -->
               <el-tooltip
                 class="item"
                 effect="dark"
@@ -64,7 +68,12 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button size="mini" type="warning" icon="el-icon-setting"></el-button>
+                <el-button
+                  @click="isShowJurisdictionModleButton(scope.row)"
+                  size="mini"
+                  type="warning"
+                  icon="el-icon-setting"
+                ></el-button>
               </el-tooltip>
             </div>
           </template>
@@ -134,6 +143,29 @@
         <el-button @click="isShowusermodo = false">取 消</el-button>
       </span>
     </el-dialog>
+
+    <!-- 用户分配权限对话框 -->
+    <el-dialog title="分配权限" :visible.sync="isShowJurisdictionModle" width="50%">
+      <div>
+        <p>当前的用户：{{newRowData.username}}</p>
+        <p>当前的角色：{{newRowData.role_name}}</p>
+        <p>
+          分配新角色：
+          <el-select placeholder="请选择" v-model="newItem">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowJurisdictionModle = false">取 消</el-button>
+        <el-button type="primary" @click="chanGeRoleItem">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -183,7 +215,7 @@ export default {
         name: '',
         password: '',
         email: '',
-        number: ''
+        mobile: ''
       },
       // 添加用户表单的验证规则
       addrules: {
@@ -212,10 +244,19 @@ export default {
           { validator: NumberR, trigger: 'blur' }
         ]
       },
+
       // 是否显示修改用户对话框
       isShowusermodo: false,
       // 查询Id的用户数据
-      userIdData: {}
+      userIdData: {},
+      // 是否显示用户权限对话框
+      isShowJurisdictionModle: false,
+      // 当前的row数据,给对话框渲染的数据
+      newRowData: {},
+      // 所有角色列表
+      roleList: [],
+      // 下拉菜单选中的权限
+      newItem: ''
     }
   },
   methods: {
@@ -279,6 +320,7 @@ export default {
         }
         // 添加用户post请求
         http.post('addusers', adduserForm, data => {
+          console.log(adduserForm)
           if (data.data.meta.status !== 201)
             return this.$message.error('用户创建失败!请重试!')
           this.$message.success('添加用户成功!')
@@ -335,30 +377,73 @@ export default {
           message: '取消删除!'
         })
       http.delete('deleteUser', id, res => {
-        if(res.data.meta.msg === '不允许删除admin账户') return this.$message({
-          type: 'error',
-          message: res.data.meta.msg
-        })
-        if(res.data.meta.status !== 200) return this.$message({
-          type: 'error',
-          message: '删除用户失败!请从试!'
-        })
+        if (res.data.meta.msg === '不允许删除admin账户')
+          return this.$message({
+            type: 'error',
+            message: res.data.meta.msg
+          })
+        if (res.data.meta.status !== 200)
+          return this.$message({
+            type: 'error',
+            message: '删除用户失败!请从试!'
+          })
         this.getqueryInfo()
-        this.$message.success('删除用户用户成功!');
-        return;
+        this.$message.success('删除用户用户成功!')
+        return
       })
+    },
+    // 分配角色按钮
+    isShowJurisdictionModleButton(row) {
+      this.newRowData = row
+      http.get('getRoleslist', res => {
+        if (res.data.meta.status !== 200)
+          return this.$message.error('获取角色列表失败!')
+        this.roleList = res.data.data
+      })
+      this.isShowJurisdictionModle = true
+    },
+    // 分配角色确定按钮
+    chanGeRoleItem() {
+      if (!this.newItem) {
+        this.isShowJurisdictionModle = false
+        return this.$message.info('取消分配角色')
+      }
+      http.put(
+        'upRoleUesr',
+        { userId: this.newRowData.id, newItem: this.newItem },
+        res => {
+          console.log(res.data.meta.msg)
+          if (res.data.meta.status !== 200)
+            return this.$message.error('分配角色失败!请重试!')
+          this.$message.success('分配角色成功!')
+          this.getqueryInfo()
+          // 清空当前下拉菜单
+          this.newItem = ''
+        }
+      )
+      this.isShowJurisdictionModle = false
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.el-breadcrumb {
-  margin-bottom: 15px !important;
-}
 .el-table {
   margin-top: 20px;
   font-size: 13px;
+  margin-bottom: 20px;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+.demonstration {
+  display: block;
+  color: #8492a6;
+  font-size: 14px;
   margin-bottom: 20px;
 }
 </style>

@@ -28,6 +28,14 @@ const routes = [
       {
         path: '/users',
         component: () => import('../components/user/Users.vue')
+      },
+      {
+        path: '/rights',
+        component: () => import('../components/power/Rights.vue')
+      },
+      {
+        path: '/roles',
+        component: () => import('../components/power/Roles.vue')
       }
     ]
   }
@@ -38,6 +46,7 @@ const router = new VueRouter({
 });
 
 // 前置路由守卫
+// 每次路由跳转前都判断是否有token!!!
 router.beforeEach((to, from, next) => {
   // 访问login直接放行
   if(to.path === '/login') return next();

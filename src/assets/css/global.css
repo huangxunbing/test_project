@@ -1,10 +1,21 @@
 /* 全局样式表 */
 /* 并引入到main里面 */
-html, body, #app{
-    height: 100%;
-    margin: 0;
+html,
+body,
+#app {
+    height : 100%;
+    margin : 0;
     padding: 0;
+    min-width: 1366px;
 }
-.el-dialog__body{
+
+.el-dialog__body {
     padding-left: 0px !important;
 }
+
+.el-breadcrumb {
+    margin-bottom: 15px !important;
+}
+.el-dialog__body{
+    padding-left: 26px !important;
+  }

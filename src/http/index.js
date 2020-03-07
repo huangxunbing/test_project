@@ -12,9 +12,19 @@ const post = {
             callback(data)
         })
     },
+
     // 添加用户接口
     addusers(params, callback) {
+        console.log(params);
         return instance.post('users', params).then(data => {
+            callback(data)
+        })
+    },
+
+
+    // 角色授权接口
+    upRoles(params, callback) {
+        return instance.post(`roles/${params.id}/rights`, { rids: params.keysArr }).then(data => {
             callback(data)
         })
     },
@@ -39,7 +49,24 @@ const get = {
             callback(data)
         })
     },
-
+    // 获取权限列表
+    getRightsList1(callback) {
+        return instance.get('rights/list').then(data => {
+            callback(data)
+        })
+    },
+    // 获取角色列表
+    getRoleslist(callback) {
+        return instance.get('roles').then(data => {
+            callback(data)
+        })
+    },
+    // 获取所有的权限列表
+    getRoleslist2(callback) {
+        return instance.get('rights/tree').then(data => {
+            callback(data)
+        })
+    },
 };
 
 
@@ -59,17 +86,29 @@ const put = {
             callback(data)
         })
     },
-
+    // 添加角色
+    upRoleUesr(params, callback) {
+        const { userId } = params;
+        const { newItem } = params;
+        return instance.put(`users/${userId}/role`, { rid: newItem }).then(data => {
+            callback(data)
+        })
+    },
 };
-
 
 // delete请求列表
 const Delete = {
 
     // 删除用户接口
-    deleteUser(params, callback){
-        console.log(params);
+    deleteUser(params, callback) {
         return instance.delete(`users/${params}`).then(data => {
+            callback(data)
+        })
+    },
+
+    // 删除指定角色id的指定id权限
+    deleteRoles(params, callback) {
+        return instance.delete(`roles/${params.id}/rights/${params.Rolesid}`).then(data => {
             callback(data)
         })
     }
@@ -94,7 +133,7 @@ export default {
     put(funName, params, callback) {
         put[funName](params, callback)
     },
-    delete(funName, params, callback){
+    delete(funName, params, callback) {
         Delete[funName](params, callback);
     }
 };
