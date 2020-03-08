@@ -36,6 +36,11 @@ const routes = [
       {
         path: '/roles',
         component: () => import('../components/power/Roles.vue')
+
+      },
+      {
+        path: '/categories',
+        component: () => import('../components/goods/Cate.vue')
       }
     ]
   }
@@ -49,11 +54,11 @@ const router = new VueRouter({
 // 每次路由跳转前都判断是否有token!!!
 router.beforeEach((to, from, next) => {
   // 访问login直接放行
-  if(to.path === '/login') return next();
+  if (to.path === '/login') return next();
   // 每次路由跳转前判断是否有token
   // 如果没有直接强制跳转到登录界面
   const TokenStr = window.sessionStorage.getItem('token');
-  if(!TokenStr) return next('login');
+  if (!TokenStr) return next('login');
 
   // 有token直接方行
   next();

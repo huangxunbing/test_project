@@ -3,9 +3,9 @@
 html,
 body,
 #app {
-    height : 100%;
-    margin : 0;
-    padding: 0;
+    height   : 100%;
+    margin   : 0;
+    padding  : 0;
     min-width: 1366px;
 }
 
@@ -16,6 +16,11 @@ body,
 .el-breadcrumb {
     margin-bottom: 15px !important;
 }
-.el-dialog__body{
+
+.el-dialog__body {
     padding-left: 26px !important;
-  }
+}
+
+.el-cascader-panel {
+    height: 300px;
+}

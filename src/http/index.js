@@ -28,6 +28,13 @@ const post = {
             callback(data)
         })
     },
+    // 添加分类接口
+    addCat(params, callback) {
+        console.log(params)
+        return instance.post('categories',params).then(data => {
+            callback(data)
+        })
+    },
 };
 // get请求列表
 const get = {
@@ -65,8 +72,25 @@ const get = {
     getRoleslist2(callback) {
         return instance.get('rights/tree').then(data => {
             callback(data)
+
         })
     },
+    // 获取商品列表
+    getcateList(params, callback) {
+        return instance.get('categories', { params }).then(data => {
+            callback(data)
+        })
+    },
+    // 获取商品分类的父级
+    getParentCateList(callback) {
+        return instance.get('categories', {
+            params: {
+                type: 2
+            }
+        }).then(data => {
+            callback(data)
+        })
+    }
 };
 
 
