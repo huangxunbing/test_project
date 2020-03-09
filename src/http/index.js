@@ -15,7 +15,6 @@ const post = {
 
     // 添加用户接口
     addusers(params, callback) {
-        console.log(params);
         return instance.post('users', params).then(data => {
             callback(data)
         })
@@ -30,8 +29,13 @@ const post = {
     },
     // 添加分类接口
     addCat(params, callback) {
-        console.log(params)
-        return instance.post('categories',params).then(data => {
+        return instance.post('categories', params).then(data => {
+            callback(data)
+        })
+    },
+    // 添加参数
+    addParams(params, callback) {
+        return instance.post(`categories/${params.id}/attributes`, { 'attr_name': params.attr_name, 'attr_sel': params.attr_sel }).then(data => {
             callback(data)
         })
     },
@@ -90,7 +94,25 @@ const get = {
         }).then(data => {
             callback(data)
         })
-    }
+    },
+    // 获取级联菜单数据
+    getParamsList(callback) {
+        return instance.get('categories').then(data => {
+            callback(data)
+        })
+    },
+    // 获取动(静)太值
+    getParams(params, callback) {
+        return instance.get(`categories/${params.catId}/attributes`, { 'params': { sel: params.selName } }).then(data => {
+            callback(data)
+        })
+    },
+    // 根据 ID 查询参数
+    getIdData(params, callback) {
+        return instance.get(`categories/${params.Id}/attributes/${params.attrId}`, { 'params': { sel: params.attr_sel } }).then(data => {
+            callback(data)
+        })
+    },
 };
 
 
@@ -118,6 +140,18 @@ const put = {
             callback(data)
         })
     },
+    // 编辑参数
+    editParams(params, callback) {
+        return instance.put(`categories/${params.id}/attributes/${params.attr_id}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name }).then(data => {
+            callback(data)
+        })
+    },
+    // 
+    upParams(params, callback) {
+        return instance.put(`categories/${params.Id}/attributes/${params.attrId}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name,'attr_vals': params.attr_vals}).then(data => {
+            callback(data)
+        })
+    },
 };
 
 // delete请求列表
@@ -133,6 +167,12 @@ const Delete = {
     // 删除指定角色id的指定id权限
     deleteRoles(params, callback) {
         return instance.delete(`roles/${params.id}/rights/${params.Rolesid}`).then(data => {
+            callback(data)
+        })
+    },
+    // 删除参数
+    deleteParams(params, callback) {
+        return instance.delete(`categories/${params.id}/attributes/${params.attrId}`).then(data => {
             callback(data)
         })
     }

@@ -222,7 +222,8 @@ export default {
       this.$refs.addCatFormRef.resetFields()
       this.addCatForm.cat_pid = 0
       this.addCatForm.cat_level = 0
-    }
+    },
+    
   }
 }
 </script>
