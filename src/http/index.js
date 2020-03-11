@@ -138,6 +138,18 @@ const get = {
             callback(data)
         })
     },
+    // 获取订单列表
+    getOrderList(paramss, callback) {
+        return instance.get('orders',{'params':paramss}).then(data => {
+            callback(data)
+        })
+    },
+    // 获取物流信息
+    getlogistics(callback) {
+        return instance.get('/kuaidi/804909574412544580').then(data => {
+            callback(data)
+        })
+    },
 };
 
 

@@ -1,7 +1,7 @@
 <template>
   <div>
+    <!-- 面包屑 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <!-- 面包屑 -->
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item>商品列表</el-breadcrumb-item>
@@ -11,7 +11,13 @@
       <el-row>
         <el-col :span="8">
           <!-- 搜索框 -->
-          <el-input placeholder="请输入内容" class="input-with-select" v-model="info.query" clearable @clear="emptyHan">
+          <el-input
+            placeholder="请输入内容"
+            class="input-with-select"
+            v-model="info.query"
+            clearable
+            @clear="emptyHan"
+          >
             <!-- 添加商品 -->
             <el-button slot="append" icon="el-icon-search" @click="getLoadDataLst"></el-button>
           </el-input>
@@ -31,9 +37,19 @@
         <el-table-column prop="goods_id" label="操作">
           <template slot-scope="scope">
             <!-- 编辑按钮 -->
-            <el-button size="mini" type="primary" icon="el-icon-edit" @click="editListHan(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              @click="editListHan(scope.row)"
+            >编辑</el-button>
             <!-- 删除按钮 -->
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteListHan(scope.row.goods_id)">删除</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="deleteListHan(scope.row.goods_id)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,30 +111,33 @@ export default {
       this.getLoadDataLst()
     },
     // list编辑监听
-    editListHan(row){
-
-    },
+    editListHan(row) {},
     // list删除监听
-   async deleteListHan(id){
-       const isdelete  = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    async deleteListHan(id) {
+      const isdelete = await this.$confirm(
+        '此操作将永久删除该文件, 是否继续?',
+        '提示',
+        {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).catch(err => err)
-      if(isdelete === 'cancel') return this.$message.info('取消删除')
-      http.delete('deleteLgoods',id,(res) => {
-        if(res.data.meta.status !== 200) return this.$message.error('删除失败!')
+        }
+      ).catch(err => err)
+      if (isdelete === 'cancel') return this.$message.info('取消删除')
+      http.delete('deleteLgoods', id, res => {
+        if (res.data.meta.status !== 200)
+          return this.$message.error('删除失败!')
         this.$message.success('删除成功!')
         this.getLoadDataLst()
       })
     },
     // 搜索按钮监听
-    emptyHan(){
+    emptyHan() {
       this.info.query = ''
       this.getLoadDataLst()
     },
     // 添加商品路由跳转
-    addgoodsHan(){
+    addgoodsHan() {
       this.$router.push({
         path: 'goods/add'
       })
