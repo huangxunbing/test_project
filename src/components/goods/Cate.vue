@@ -39,9 +39,14 @@
           <el-tag size="mini" v-if="scope.row.cat_level === 2" type="warning">三级</el-tag>
         </template>
         <!-- 操作 -->
-        <template slot="opt" slot-scope>
+        <template slot="opt" slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="dleCate(scope.row.cat_id)"
+          >删除</el-button>
         </template>
       </tree-table>
 
@@ -85,6 +90,13 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addcatModel = false">取 消</el-button>
         <el-button type="primary" @click="addCat">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑对话框 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -155,7 +167,8 @@ export default {
         expandTrigger: 'hover'
       },
       // 父级分类的v-model
-      selectdKeys: []
+      selectdKeys: [],
+      dialogVisible: false
     }
   },
   methods: {
@@ -208,8 +221,9 @@ export default {
     addCat() {
       this.$refs.addCatFormRef.validate(valid => {
         if (!valid) return this.$message.error('商品名称格式不正确!')
-        http.post('addCat', this.addCatForm, (res) => {
-          if(res.data.meta.status !== 201) return this.$message.error('添加分类失败!')
+        http.post('addCat', this.addCatForm, res => {
+          if (res.data.meta.status !== 201)
+            return this.$message.error('添加分类失败!')
           this.$message.success('添加分类成功!')
           this.getcateList()
           this.addcatModel = false
@@ -223,7 +237,24 @@ export default {
       this.addCatForm.cat_pid = 0
       this.addCatForm.cat_level = 0
     },
-    
+    async dleCate(id) {
+      const Whether = await this.$confirm(
+        '此操作将永久删除该文件, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+      if(Whether === 'cancel') return this.$message.info('取消删除')
+      http.delete('deleteIdCate',id,res => {
+        console.log(res);
+        if(res.data.meta.status !== 200) return this.$message.error('删除失败!')
+        this.$message.success('删除成功!')
+        this.getcateList()
+      })
+    }
   }
 }
 </script>

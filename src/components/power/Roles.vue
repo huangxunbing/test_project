@@ -9,11 +9,11 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary">添加角色</el-button>
+          <el-button type="primary" @click="EditRoles('tjjs')">添加角色</el-button>
         </el-col>
       </el-row>
       <!-- 表格区 -->
-      <el-table :data="rolesList1">
+      <el-table :data="rolesList1" border>
         <el-table-column type="expand">
           <template slot-scope="scope">
             <el-row
@@ -64,9 +64,10 @@
               :class="scope.row.id"
               size="mini"
               type="primary"
-              icon="el-icon-search"
-              @click="EditRoles(scope.row)"
+              icon="el-icon-edit"
+              @click="EditRoles('bjjs', scope.row)"
             >编辑</el-button>
+            <!-- 删除角色 -->
             <el-button
               size="mini"
               type="danger"
@@ -101,14 +102,29 @@
         <el-button @click="showSetRolesDetermine" type="primary">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 编辑角色对话框 -->
-    <el-dialog title="添加分类" :visible.sync="EditDialog" width="50%">
-
-
-      <!--  -->
+    <el-dialog
+      :title="type === 'tjjs' ? '添加角色': '编辑角色'"
+      :visible.sync="dialogVisible"
+      width="50%"
+      @closed="outaddR"
+    >
+      <el-form
+        :model="info"
+        ref="ruleForm"
+        :rules="rules"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="角色名字" prop="roleName">
+          <el-input v-model="info.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input v-model="info.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="EditDialog = false">确 定</el-button>
-        <el-button @click="EditDialog = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="DetermineADDR">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -140,7 +156,24 @@ export default {
       // 当前的row的id
       RoleId: 1,
       // 是否开启编辑角色对话框
-      EditDialog: false
+      EditDialog: false,
+      dialogVisible: false,
+      // 添加角色信息
+      info: {
+        roleName: '',
+        roleDesc: ''
+      },
+      // 添加角色验证规则
+      rules: {
+        roleName: [
+          { required: true, message: '请输入角色名字', trigger: 'blur' }
+        ],
+        roleDesc: [
+          { required: false, message: '请输入角色名字', trigger: 'blur' }
+        ]
+      },
+      // ofEdit是否是编辑角色或者添加角色
+      type: ''
     }
   },
   methods: {
@@ -208,7 +241,6 @@ export default {
       const keysArr = keys.join(',')
 
       http.post('upRoles', { id: this.RoleId, keysArr: keysArr }, res => {
-        console.log(res.data.meta.status)
         if (res.data.meta.status !== 200)
           return this.$message.error('权限更新失败!请重试')
         this.showSetRoles = false
@@ -216,14 +248,70 @@ export default {
         this.getRoleslist()
       })
     },
-    // 编辑角色按钮
-    EditRoles(row) {
-      this.EditDialog = true
-      console.log('编辑角色')
+    // 编辑或者添加按钮角色按钮
+    EditRoles(type, row) {
+      this.type = type
+      if (this.type === 'tjjs') {
+        this.info = this.info = {
+          roleName: '',
+          roleDesc: ''
+        }
+        // console.log(this.info)
+      } else if (type === 'bjjs') {
+        this.info = {
+          id: row.id,
+          roleName: row.roleName,
+          roleDesc: row.roleDesc
+        }
+        // console.log(this.info)
+      }
+      this.dialogVisible = true
     },
     // 删除角色按钮
-    deleteRoles(row) {
-      console.log('删除角色')
+   async deleteRoles(row) {
+      const Whether = await this.$confirm(
+        '此操作将永久删除该角色!, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+      if(Whether=== 'cancel') return this.$message.info('取消删除')
+      http.delete('deleteRoles',row.id,res => {
+        if(res.data.meta.status !== 200) return this.$message.error('删除失败!')
+        this.$message.success('删除成功!')
+        this.getRoleslist()
+      })
+    },
+    // 关闭添加角色对话框
+    outaddR() {
+      this.info = {
+        roleName: '',
+        roleDesc: ''
+      }
+      this.$refs.ruleForm.resetFields()
+    },
+    // 确定添加角色按钮
+    DetermineADDR() {
+      if (this.type === 'tjjs') {
+        http.post('addroles', this.info, res => {
+          if (res.data.meta.status !== 201)
+            return this.$message.error('添加角色失败!')
+          this.$message.success('添加角色成功!')
+          this.getRoleslist()
+        })
+        this.dialogVisible = false
+      } else if (this.type === 'bjjs') {
+        http.put('UProless', this.info, res => {
+          if (res.data.meta.status !== 200)
+            return this.$message.error('角色更新失败!')
+          this.$message.success('角色更新成功!')
+          this.getRoleslist()
+        })
+        this.dialogVisible = false
+      }
     }
   }
 }

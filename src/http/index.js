@@ -41,8 +41,13 @@ const post = {
     },
     // 添加商品接口
     addCateFrom(params, callback) {
-        console.log(params);
         return instance.post('goods', params).then(data => {
+            callback(data)
+        })
+    },
+    // 添加角色
+    addroles(params, callback) {
+        return instance.post('roles', params).then(data => {
             callback(data)
         })
     },
@@ -183,7 +188,7 @@ const put = {
             callback(data)
         })
     },
-    // 编辑参数
+    // 编辑参数UProles
     editParams(params, callback) {
         return instance.put(`categories/${params.id}/attributes/${params.attr_id}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name }).then(data => {
             callback(data)
@@ -192,6 +197,12 @@ const put = {
     // 
     upParams(params, callback) {
         return instance.put(`categories/${params.Id}/attributes/${params.attrId}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name, 'attr_vals': params.attr_vals }).then(data => {
+            callback(data)
+        })
+    },
+    // 更新角色名字或者描述
+    UProless(params, callback) {
+        return instance.put(`roles/${params.id}`,params).then(data => {
             callback(data)
         })
     },
@@ -222,6 +233,18 @@ const Delete = {
     // 根据id删除商品
     deleteLgoods(params, callback) {
         return instance.delete(`goods/${params}`).then(data => {
+            callback(data)
+        })
+    },
+    // 根据id删除角色
+    deleteRoles(params, callback) {
+        return instance.delete(`roles/${params}`).then(data => {
+            callback(data)
+        })
+    },
+    // 根据id删除商品
+    deleteIdCate(params, callback) {
+        return instance.delete(`categories/${params}`).then(data => {
             callback(data)
         })
     },
