@@ -59,8 +59,20 @@
         <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
         <el-table-column label="操作" width="300px">
           <template slot-scope="scope">
-            <el-button :class="scope.row.id" size="mini" type="primary" icon="el-icon-search">编辑</el-button>
-            <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+            <!-- 编辑角色 -->
+            <el-button
+              :class="scope.row.id"
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              @click="EditRoles(scope.row)"
+            >编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="deleteRoles(scope.row)"
+            >删除</el-button>
             <el-button
               size="mini"
               type="warning"
@@ -87,6 +99,16 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="showSetRoles = false">取 消</el-button>
         <el-button @click="showSetRolesDetermine" type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑角色对话框 -->
+    <el-dialog title="添加分类" :visible.sync="EditDialog" width="50%">
+
+
+      <!--  -->
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="EditDialog = false">确 定</el-button>
+        <el-button @click="EditDialog = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -116,7 +138,9 @@ export default {
       // 要展示的树状结构的子节点
       defkeys: [],
       // 当前的row的id
-      RoleId: 1
+      RoleId: 1,
+      // 是否开启编辑角色对话框
+      EditDialog: false
     }
   },
   methods: {
@@ -191,6 +215,15 @@ export default {
         this.$message.success('权限更新成功!')
         this.getRoleslist()
       })
+    },
+    // 编辑角色按钮
+    EditRoles(row) {
+      this.EditDialog = true
+      console.log('编辑角色')
+    },
+    // 删除角色按钮
+    deleteRoles(row) {
+      console.log('删除角色')
     }
   }
 }

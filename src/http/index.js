@@ -27,7 +27,7 @@ const post = {
             callback(data)
         })
     },
-    // 添加分类接口
+    // 添加分类接口addCate
     addCat(params, callback) {
         return instance.post('categories', params).then(data => {
             callback(data)
@@ -36,6 +36,13 @@ const post = {
     // 添加参数
     addParams(params, callback) {
         return instance.post(`categories/${params.id}/attributes`, { 'attr_name': params.attr_name, 'attr_sel': params.attr_sel }).then(data => {
+            callback(data)
+        })
+    },
+    // 添加商品接口
+    addCateFrom(params, callback) {
+        console.log(params);
+        return instance.post('goods', params).then(data => {
             callback(data)
         })
     },
@@ -113,6 +120,24 @@ const get = {
             callback(data)
         })
     },
+    // 获取商品列表
+    getGoodsList(params, callback) {
+        return instance.get('goods', { params }).then(data => {
+            callback(data)
+        })
+    },
+    // 获取商品列表
+    getList(callback) {
+        return instance.get('categories').then(data => {
+            callback(data)
+        })
+    },
+    // 获取商品参数many
+    getmanyParams(params, callback) {
+        return instance.get(`categories/${params.id}/attributes`, { 'params': { sel: params.sel } }).then(data => {
+            callback(data)
+        })
+    },
 };
 
 
@@ -148,7 +173,7 @@ const put = {
     },
     // 
     upParams(params, callback) {
-        return instance.put(`categories/${params.Id}/attributes/${params.attrId}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name,'attr_vals': params.attr_vals}).then(data => {
+        return instance.put(`categories/${params.Id}/attributes/${params.attrId}`, { 'attr_sel': params.attr_sel, 'attr_name': params.attr_name, 'attr_vals': params.attr_vals }).then(data => {
             callback(data)
         })
     },
@@ -175,13 +200,18 @@ const Delete = {
         return instance.delete(`categories/${params.id}/attributes/${params.attrId}`).then(data => {
             callback(data)
         })
-    }
+    },
+    // 根据id删除商品
+    deleteLgoods(params, callback) {
+        return instance.delete(`goods/${params}`).then(data => {
+            callback(data)
+        })
+    },
 }
 
 // 挂载axios拦截器
 instance.interceptors.request.use(config => {
     config.headers.Authorization = window.sessionStorage.getItem('token');
-    // console.dir(config.headers.Authorization);
     return config
 });
 
