@@ -144,9 +144,15 @@ const get = {
             callback(data)
         })
     },
-    // 获取物流信息
+    // 获取物流信息getEacharts
     getlogistics(callback) {
         return instance.get('/kuaidi/804909574412544580').then(data => {
+            callback(data)
+        })
+    },
+    // 获取数据报表
+    getEacharts(callback) {
+        return instance.get('reports/type/1').then(data => {
             callback(data)
         })
     },
