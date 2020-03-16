@@ -55,7 +55,6 @@ export default {
   mounted() {
     var myChart = echarts.init(document.getElementById('main'))
     http.get('getEacharts', res => {
-      console.log(res.status)
       if (res.status !== 200) return this.$message.error('获取图表数据失败!')
 
       const data = _.merge(res.data.data, this.options)

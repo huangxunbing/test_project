@@ -312,7 +312,6 @@ export default {
             attr_sel: this.activeName
           },
           res => {
-            console.log(res.data.data)
             this.$message.success('添加成功!')
             this.getParamsData()
             this.addisOpendialog = false
@@ -347,7 +346,6 @@ export default {
             attr_sel: this.activeName
           },
           res => {
-            console.log(res.data.meta)
             if (res.data.meta.status !== 200)
               return this.$message.error('编辑失败!')
             this.$message.success('添加成功!')

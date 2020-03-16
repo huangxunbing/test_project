@@ -249,7 +249,6 @@ export default {
       ).catch(err => err)
       if(Whether === 'cancel') return this.$message.info('取消删除')
       http.delete('deleteIdCate',id,res => {
-        console.log(res);
         if(res.data.meta.status !== 200) return this.$message.error('删除失败!')
         this.$message.success('删除成功!')
         this.getcateList()

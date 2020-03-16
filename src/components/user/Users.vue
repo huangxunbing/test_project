@@ -320,7 +320,6 @@ export default {
         }
         // 添加用户post请求
         http.post('addusers', adduserForm, data => {
-          console.log(adduserForm)
           if (data.data.meta.status !== 201)
             return this.$message.error('用户创建失败!请重试!')
           this.$message.success('添加用户成功!')
@@ -412,7 +411,6 @@ export default {
         'upRoleUesr',
         { userId: this.newRowData.id, newItem: this.newItem },
         res => {
-          console.log(res.data.meta.msg)
           if (res.data.meta.status !== 200)
             return this.$message.error('分配角色失败!请重试!')
           this.$message.success('分配角色成功!')

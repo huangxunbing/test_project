@@ -280,7 +280,6 @@ export default {
         form.attrs = this.addForm.attrs
         // post添加商品
         http.post('addCateFrom', form, res => {
-          console.log(res)
           if (res.data.meta.status !== 201)
             return this.$message.error('添加失败!')
           this.$message.success('添加成功!')

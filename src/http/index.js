@@ -1,4 +1,6 @@
+// import Vue from 'vue'
 import axios from 'axios';
+import nprogress from 'nprogress'
 
 const instance = axios.create({
     baseURL: 'http://127.0.0.1:8888/api/private/v1/',
@@ -252,7 +254,12 @@ const Delete = {
 
 // 挂载axios拦截器
 instance.interceptors.request.use(config => {
+    nprogress.start()
     config.headers.Authorization = window.sessionStorage.getItem('token');
+    return config
+});
+instance.interceptors.response.use(config => {
+    nprogress.done()
     return config
 });
 
